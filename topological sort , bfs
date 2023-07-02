@@ -1,0 +1,35 @@
+from collections import deque
+class Solution:
+    def findOrder(self,ald, n, k):
+        def toposort(v, adj):
+            ans=[]
+            indegree=[0]*v
+            for i in range(v):
+                for val in adj[i]:
+                    indegree[val]+=1
+            q=deque()
+            for i in range(v):
+                if indegree[i]==0:
+                    q.append(i)
+            while q:
+                node=q.popleft()
+                ans.append(node)
+                for val in adj[node]:
+                    indegree[val]-=1
+                    if indegree[val]==0:
+                        q.append(val)
+            return ans
+        adj=[[]for i in range(k)]
+        for i in range(n-1):
+            s1=ald[i]
+            s2=ald[i+1]
+            l=min(len(s1),len(s2))
+            for j in range(l):
+                if s1[j]!=s2[j]:
+                    adj[ord(s1[j])-ord('a')].append(ord(s2[j])-ord('a'))
+                    break
+        arr=toposort(k,adj)
+        arr=list(map(lambda x:x+97,arr))
+        a=list(map(lambda x:chr(x),arr))
+        s="".join(a)
+        return s
